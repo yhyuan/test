@@ -1,0 +1,466 @@
+
+
+<!DOCTYPE html>
+
+<!--<html manifest="SportFish_mobile.manifest">-->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>Sport Fish Guide</title>
+	<meta name="Author" content="MOE" /> 
+    <meta name="Keywords" content="Mobile, GIS" /> 
+    <meta name="Description" content="Sport Fish Advisory" /> 
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="apple-touch-icon" href="jquery.mobile-1.2.0/SportFish_mobile.jpg" />
+	<link rel="stylesheet" href="jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.css" />
+	<script src="jquery.mobile-1.2.0/jquery-1.8.2.min.js"></script>
+	<script src="jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script src="SportFish_mobile2.js"></script>
+</head>
+
+<body>
+<div data-role="page" id="initPage">
+  <div data-role="header">
+	<h1>Introduction</h1>
+	<a href="#settingPage" data-icon="gear" data-iconpos="right" class="ui-btn-right">Setting</a>	
+ </div>
+ <div data-role="content">
+	The Guide to Eating Ontario Sport Fish allows you to easily find consumption advice for sport fish in lakes and rivers across Ontario.<br><br>
+	<div id="GPS_Network"  style="display:none">
+		<a id="nearbyLakesBtn" href="#nearbyLakesPage" data-role="button" data-inline="true" data-theme="b" >Search nearby lakes</a><br>
+		<a id="nearbySpeciesBtn" href="#nearbySpeciesPage" data-role="button" data-inline="true" data-theme="b" >Search nearby species</a><br>	
+	</div>
+	<div id="moreSearchButton"  style="display:none">
+		<a id="moreSearchBtn" href="#" data-role="button" data-inline="true" data-theme="b"  onClick="displayMoreSearches()">More Searches...</a><br>			
+	</div>		
+	<div id="moreSearch"  style="display:none">
+		<a id="nearbyLakesAddressBtn" href="#nearbyLakesAddressPage" data-role="button" data-inline="true" data-theme="b" >Search lakes around a town</a><br>
+		<a id="nearbySpeciesAddressBtn" href="#nearbySpeciesAddressPage" data-role="button" data-inline="true" data-theme="b" >Search species around a town</a><br>	
+		<a id="searchLakeNameBtn" href="#searchLakeNameSolePage" data-role="button" data-inline="true" data-theme="b" >Search lakes with a lake name</a><br>				
+	</div>	
+	<div id="GPS"  style="display:none">
+		<a id="nearbyLakesBtn" href="#nearbyLakesPage" data-role="button" data-inline="true" data-theme="b" >Search nearby lakes</a><br>
+		<a id="nearbySpeciesBtn" href="#nearbySpeciesPage" data-role="button" data-inline="true" data-theme="b" >Search nearby species</a><br>	
+		<a id="searchLakeNameBtn" href="#searchLakeNameSolePage" data-role="button" data-inline="true" data-theme="b" >Search lakes with a lake name</a><br>			
+		The network connection is not available on your device now. If you want to search advisories around a town, please activate it. Otherwise, please use your current location or a lake name to find the advisory. 
+	</div>	
+	<div id="Network"  style="display:none">
+		<a id="nearbyLakesAddressBtn" href="#nearbyLakesAddressPage" data-role="button" data-inline="true" data-theme="b" >Search lakes around a town</a><br>
+		<a id="nearbySpeciesAddressBtn" href="#nearbySpeciesAddressPage" data-role="button" data-inline="true" data-theme="b" >Search species around a town</a><br>	
+		<a id="searchLakeNameBtn" href="#searchLakeNameSolePage" data-role="button" data-inline="true" data-theme="b" >Search lakes with a lake name</a><br>	
+		The location service is not available on your device now. If you want to search advisories around your current location, please activate it. Otherwise, please use a town or a lake name to find the advisory. 
+	</div>	
+	<div id="withoutGPSNetwork"  style="display:none">
+		<a id="searchLakeNameBtn" href="#searchLakeNameSolePage" data-role="button" data-inline="true" data-theme="b" >Search lakes with a lake name</a><br>	
+		The location service and the network connection are not available. If you want to have more search options, please activate them. <br>
+	</div>
+	<!--<img src="jquery.mobile-1.2.0/SportFish.png" width="300" height="262">-->
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+<!--
+<div data-role="page" id="advancedSearchPage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	  
+	<h1>Advanced Search</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<div id="advancedSearchPageWithNetwork"  style="display:none">The advanced search allows you to search for an advisory around a town or with a lake name.<br>
+		<a id="nearbyLakesAddressBtn" href="#nearbyLakesAddressPage" data-role="button" data-inline="true" data-theme="b" >Search lakes around a town</a><br>
+		<a id="nearbySpeciesAddressBtn" href="#nearbySpeciesAddressPage" data-role="button" data-inline="true" data-theme="b" >Search species around a town</a><br>		
+		<a id="searchLakeNameBtn" href="#searchLakeNameSolePage" data-role="button" data-inline="true" data-theme="b" >Search lake name</a><br>				
+	</div>
+	<div id="advancedSearchPageWithoutNetwork" style="display:none">
+		There is no network connection on this device. Please turn on the data network if you want to search for an advisory around a town.<br>
+		<a id="searchLakeNameBtn" href="#searchLakeNameSolePage" data-role="button" data-inline="true" data-theme="b" >Search lake name</a><br>		
+	</div>	
+  </div>
+   <div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>
+</div>-->
+
+<div data-role="page" id="searchLakeNameSolePage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	
+	<h1>Lake Name</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>	
+ </div>
+  <div data-role="content">
+	<form>
+		<label for="basic">Lake Name (e.g. Simcoe):</label>
+		<input type="text" name="name" id="lakeNameInput" value=""  />
+	</form>
+	<a href="#searchLakeNameLakesListPage" data-role="button" data-inline="true" data-theme="b" >Start Search</a><br>
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="searchLakeNameLakesListPage">
+  <div data-role="header">
+    <a href="#searchLakeNameSolePage" data-icon="arrow-l">Back</a>	  
+	<h1>Lake</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<div id="searchLakeNameLakesListPageNoResult"  style="display:none">No result was found using the lake name. Please try again.<br>
+	</div>
+	<div id="searchLakeNameLakesListPageWithResults">
+		<!--Please select one of the following lakes. <br><br>-->
+		<ul data-role="listview" id="searchLakeNameSoleLakesList" data-filter="true">
+		</ul>	
+	</div>	 
+  </div>
+<!--   <div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="searchLakeNameSpeciesListPage">
+  <div data-role="header">
+    <a href="#searchLakeNameLakesListPage" data-icon="arrow-l">Back</a>	  
+	<h1>Species</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<!--Please select one of the following species. <br><br>-->
+	<ul data-role="listview" id="searchLakeNameSpeciesList" data-filter="true">
+	</ul>	
+  </div>
+<!--   <div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="searchLakeNameDetailPage">
+  <div data-role="header">
+    <a href="#searchLakeNameSpeciesListPage" data-icon="arrow-l">Back</a>	
+	<h1>Advisories </h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	   <div id = "searchLakeNameDetailListInfo">In your selected lake, you can have the following maximum number of meals per month for <strong>General Population</strong> and <font color='#FF0000'><strong>Sensitive Population</strong></font> (Women of child-bearing age and children under 15) according to the length of your selected species.<br><br></div>
+		 <ul data-role="listview" id="searchLakeNameDetailList" data-filter="false">
+		 </ul>			
+ </div>
+<!--   <div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesAddressPage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	  
+	<h1>Town</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<form>
+		<label for="basic">Town (e.g. Barrie):</label>
+		<input type="text" name="name" id="nearbySpeciesAddressInput" value=""  />
+	</form>
+	<a href="#nearbySpeciesAddressSpeciesListPage" data-role="button" data-inline="true" data-theme="b" >Start Search</a><br>
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesAddressSpeciesListPage">
+  <div data-role="header">
+    <a href="#nearbySpeciesAddressPage" data-icon="arrow-l">Back</a>	  
+	<h1>Species</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+ 	<div id="nearbySpeciesAddressLakesListPageNoResult"  style="display:none">No result was found using the town name. Please try again.<br>
+	</div>
+	<div id="nearbySpeciesAddressLakesListPageWithResults">
+		<!--Please select one of the following species. <br><br>-->
+		<ul data-role="listview" id="nearbySpeciesAddressSpeciesList" data-filter="true">
+		</ul>	
+	</div>	 
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesAddressLakesPage">
+  <div data-role="header">
+    <a href="#nearbySpeciesAddressSpeciesListPage" data-icon="arrow-l">Back</a>	  
+	<h1>Lakes</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<!--Please select one of the following lakes. <br><br>-->
+	<ul data-role="listview" id="nearbySpeciesAddressLakesList" data-filter="true">
+	</ul>	
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesAddressDetailPage">
+  <div data-role="header">
+    <a href="#nearbySpeciesAddressLakesPage" data-icon="arrow-l">Back</a>	
+	<h1>Advisories </h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	   <div id = "nearbySpeciesAddressDetailListInfo">In your selected lake, you can have the following maximum number of meals per month for <strong>General Population</strong> and <font color='#FF0000'><strong>Sensitive Population</strong></font> (Women of child-bearing age and children under 15) according to the length of your selected species.<br><br></div>
+		 <ul data-role="listview" id="nearbySpeciesAddressDetailList" data-filter="false">
+		 </ul>			
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbyLakesAddressPage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	  
+	<h1>Town</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<form>
+		<label for="basic">Town (e.g. Barrie):</label>
+		<input type="text" name="name" id="nearbyLakesAddressInput" value="" />
+	</form>
+	<a href="#nearbyLakesAddressLakesListPage" data-role="button" data-inline="true" data-theme="b" >Start Search</a><br>
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbyLakesAddressLakesListPage">
+  <div data-role="header">
+    <a href="#nearbyLakesAddressPage" data-icon="arrow-l">Back</a>	  
+	<h1>Lakes</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<div id="nearbyLakesAddressLakesListPageNoResult"  style="display:none">No result was found using the town name. Please try again.<br>
+	</div>
+	<div id="nearbyLakesAddressLakesListPageWithResults">
+		<!--Please select one of the following lakes. <br><br>-->
+		<ul data-role="listview" id="nearbyLakesAddressLakesList" data-filter="true">
+		</ul>	
+	</div>	 
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbyLakesAddressSpeciesPage">
+  <div data-role="header">
+    <a href="#nearbyLakesAddressLakesListPage" data-icon="arrow-l">Back</a>	  
+	<h1>Species</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<!--Please select one of the following species. <br><br>-->
+	<ul data-role="listview" id="nearbyLakesAddressSpeciesList" data-filter="true">
+	</ul>	
+  </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbyLakesAddressDetailPage">
+  <div data-role="header">
+    <a href="#nearbyLakesAddressSpeciesPage" data-icon="arrow-l">Back</a>	
+	<h1>Advisories </h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	   <div id = "nearbyLakesAddressDetailListInfo">In your selected lake, you can have the following maximum number of meals per month for <strong>General Population</strong> and <font color='#FF0000'><strong>Sensitive Population</strong></font> (Women of child-bearing age and children under 15) according to the length of your selected species.<br><br></div>
+		 <ul data-role="listview" id="nearbyLakesAddressDetailList" data-filter="false">
+		 </ul>			
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+<!--
+<div data-role="page" id="nearbySpeciesAddressPage">
+  <div data-role="header">
+    <a href="#advancedSearchPage" data-icon="arrow-l">Back</a>	  
+	<h1>Town</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<form>
+		<label for="basic">Town (e.g. Barrie):</label>
+		<input type="text" name="name" id="nearbySpeciesAddressInput" value=""  />
+	</form>
+	<a href="#nearbySpeciesAddressListPage" data-role="button" data-inline="true" data-theme="b" >Start Search</a><br>
+  </div>
+   <div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>
+</div>-->
+<!--
+<div data-role="page" id="searchLakeNamePage">
+  <div data-role="header">
+    <a href="#advancedSearchPage" data-icon="arrow-l">Back</a>	  
+	<h1>Town</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+ <div data-role="content">
+	<form>
+		<label for="basic">Lake Name:</label>
+		<input type="text" name="name" id="searchLakeNameInput" value=""  />
+	</form>
+	<a href="#searchLakeNameListPage" data-role="button" data-inline="true" data-theme="b" >Start Search</a><br>
+  </div>
+   <div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>
+</div>-->
+
+<div data-role="page" id="settingPage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	
+	<h1>Setting</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	<fieldset data-role="controlgroup">
+		<legend>Choose a search radius:</legend>
+			<input type="radio" name="radio-choice" id="radio-choice-1" value="choice-1" onClick="setSearchRadius(25)" checked="checked" />
+			<label for="radio-choice-1">25 KM</label>
+
+			<input type="radio" name="radio-choice" id="radio-choice-2" value="choice-2"  onClick="setSearchRadius(50)"  />
+			<label for="radio-choice-2">50 KM</label>
+
+			<input type="radio" name="radio-choice" id="radio-choice-3" value="choice-3"  onClick="setSearchRadius(100)"  />
+			<label for="radio-choice-3">100 KM</label>
+	</fieldset>
+	This application is designed and implemented by Ontario Ministry of the Environment. 
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+
+<div data-role="page" id="nearbyLakesPage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	
+	<h1>Lakes</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+  	   <div id="nearbyLakesWithResults"  style="display:none">
+			<!--Please select one of the following lakes:<br><br>-->
+			 <ul data-role="listview" id="nearbyLakesList" data-filter="true">
+			 </ul>	
+	   </div>			 
+	   <div id="nearbyLakesWithoutResults"  style="display:none">
+			No Result is found. Please increase your search radius and search again. 
+	   </div>	  	 
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbyLakesSpeciesPage">
+  <div data-role="header">
+    <a href="#nearbyLakesPage" data-icon="arrow-l">Back</a>	
+	<h1>Species</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+		<!--Please select one of the following species:<br><br>-->
+		 <ul data-role="listview" id="nearbyLakesSpeciesList" data-filter="true">
+		 </ul>	
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbyLakesDetailPage">
+  <div data-role="header">
+    <a href="#nearbyLakesSpeciesPage" data-icon="arrow-l">Back</a>	
+	<h1>Advisories </h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	   <div id = "nearbyLakesDetailListInfo">In your selected lake, you can have the following maximum number of meals per month for <strong>General Population</strong> and <font color='#FF0000'><strong>Sensitive Population</strong></font> (Women of child-bearing age and children under 15) according to the length of your selected species.<br><br></div>
+		 <ul data-role="listview" id="nearbyLakesDetailList" data-filter="false">
+		 </ul>			
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesPage">
+  <div data-role="header">
+    <a href="#initPage" data-icon="arrow-l">Back</a>	
+	<h1>Species</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	   <div id="nearbySpeciesWithResults"  style="display:none">
+		<!--Please select one of the following species:<br><br>-->
+		 <ul data-role="listview" id="nearbySpeciesList" data-filter="true">
+		 </ul>	
+	   </div>
+	   <div id="nearbySpeciesWithoutResults"  style="display:none">
+			No Result is found. Please increase your search radius and search again. 
+	   </div>	  
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesLakesPage">
+  <div data-role="header">
+    <a href="#nearbySpeciesPage" data-icon="arrow-l">Back</a>	
+	<h1>Lakes</h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+		<!--Please select one of the following lakes:<br><br>-->
+		 <ul data-role="listview" id="nearbySpeciesLakesList" data-filter="true">
+		 </ul>	
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+
+<div data-role="page" id="nearbySpeciesDetailPage">
+  <div data-role="header">
+    <a href="#nearbySpeciesLakesPage" data-icon="arrow-l">Back</a>	
+	<h1>Advisories </h1>
+	<a href="#initPage" data-icon="home" data-iconpos="right" class="ui-btn-right">Home</a>
+ </div>
+  <div data-role="content">
+	   <div id = "nearbySpeciesDetailListInfo">In your selected lake, you can have the following maximum number of meals per month for <strong>General Population</strong> and <font color='#FF0000'><strong>Sensitive Population</strong></font> (Women of child-bearing age and children under 15) according to the length of your selected species.<br><br></div>
+	   <ul data-role="listview" id="nearbySpeciesDetailList" data-filter="false">
+	   </ul>			
+ </div>
+   <!--<div data-role="footer" data-fixed="true" data-position="fixed">
+	<h1>Ontario Ministry of the Environment</h1>
+  </div>-->
+</div>
+</body>
+</html>
