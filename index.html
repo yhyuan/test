@@ -16,7 +16,8 @@
 	<link rel="stylesheet" href="jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.css" />
 	<script src="jquery.mobile-1.2.0/jquery-1.8.2.min.js"></script>
 	<script src="jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"></script>
-    <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
 	<script src="SportFish_mobile2.js"></script>
 </head>
 
@@ -112,6 +113,8 @@
  <div data-role="content">
 	<div id="searchLakeNameLakesListPageNoResult"  style="display:none">No result was found using the lake name. Please try again.<br>
 	</div>
+	<div id="searchLakeNameLakesListPageManyResult"  style="display:none">More than 30 results have been found. Only the first 30 results are displayed.<br><br>
+	</div>	
 	<div id="searchLakeNameLakesListPageWithResults">
 		<!--Please select one of the following lakes. <br><br>-->
 		<ul data-role="listview" id="searchLakeNameSoleLakesList" data-filter="true">

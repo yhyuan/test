@@ -98,49 +98,105 @@ var filterAdvisoriesWithDistance = function (lat, lon) {
 			return 0;
 		});
 };
+
+
 /*
-var loadScript = function(url, callback){
-	var script = document.createElement('script');
-	script.type = "text/javascript";
-	if(script.readyState){
-		script.onreadystatechange = function(){
-			if(script.readyState === "loaded" || script.readyState === "complete"){
-				script.onreadystatechange = null;
-				callback();
-			}
-		};
-	}else{
-		script.onload = function(){
-			callback();
-		};
-	}	
-	script.src = url;
-	document.getElementsByTagName("head")[0].appendChild(script);
-};
+var online = true;
+var onOnline = function (){online = true;alert("online");};
+var onOffline = function (){online = false;alert("offline");};
+document.addEventListener("online", onOnline, false);
+document.addEventListener("offline", onOffline, false);
 */
-var supportsGeo = function () {
+
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+    var networkState = navigator.network.connection.type;
+	//alert("Ready");
+    if(networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
+		//alert("network not available.");
+        window.navigator.geolocation.getCurrentPosition(function (position) {
+				latitude = position.coords.latitude;
+				longitude = position.coords.longitude;
+				$("#GPS_Network").hide();
+				$("#moreSearchButton").hide();
+				$("#GPS").show();
+				$("#Network").hide();
+				$("#withoutGPSNetwork").hide();	
+			}, function (error) {
+				$("#GPS_Network").hide();
+				$("#moreSearchButton").hide();		
+				$("#GPS").hide();
+				$("#Network").hide();
+				$("#withoutGPSNetwork").show();
+			}, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+    } else {
+		//alert("network available.");
+        window.navigator.geolocation.getCurrentPosition(function (position) {
+				latitude = position.coords.latitude;
+				longitude = position.coords.longitude;
+				$("#GPS_Network").show();
+				$("#moreSearchButton").show();
+				$("#GPS").hide();
+				$("#Network").hide();
+				$("#withoutGPSNetwork").hide();
+			}, function (error) {
+				$("#GPS_Network").hide();
+				$("#moreSearchButton").hide();
+				$("#GPS").hide();
+				$("#Network").show();
+				$("#withoutGPSNetwork").hide();
+			}, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+	}
+ }
+
+var init = function () {
 	if (navigator.geolocation) {
-		return true;
+		window.navigator.geolocation.getCurrentPosition(setupWithGPS, function (error) {
+			setupWithoutGPS();
+		}, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });	
 	} else {
-		return false;
+		setupWithoutGPS();
 	}
 };
+ /*
+         document.addEventListener('deviceready', function() {
+            navigator.notification.alert('device ready'); 
+        });*/
 var setupWithGPS = function (position) {
+	//alert(online);
 	latitude = position.coords.latitude;
 	longitude = position.coords.longitude;
-	if (navigator.onLine) {
+	//var geocoder = new google.maps.Geocoder();
+	/*document.addEventListener("deviceready", function () {
+		var networkState = navigator.network.connection.type;
+		//console.log(networkState);
+		if(networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
+			$("#GPS_Network").hide();
+			$("#moreSearchButton").hide();
+			$("#GPS").show();
+			$("#Network").hide();
+			$("#withoutGPSNetwork").hide();	
+		} else {
+			$("#GPS_Network").show();
+			$("#moreSearchButton").show();
+			$("#GPS").hide();
+			$("#Network").hide();
+			$("#withoutGPSNetwork").hide();
+		}
+	}, false);*/
+	//if (typeof google !== "undefined"){
 		$("#GPS_Network").show();
 		$("#moreSearchButton").show();
 		$("#GPS").hide();
 		$("#Network").hide();
 		$("#withoutGPSNetwork").hide();
-	} else {
+	/*} else {
 		$("#GPS_Network").hide();
 		$("#moreSearchButton").hide();					
 		$("#GPS").show();
 		$("#Network").hide();
 		$("#withoutGPSNetwork").hide();				
-	}	
+	}*/
 };
 var setupWithoutGPS = function () {
 	/*switch (error.code) {
@@ -154,19 +210,38 @@ var setupWithoutGPS = function () {
 		default:
 			alert("Unexpected error occurred.");
 	}*/
-	if (navigator.onLine) {
+	//alert(online);
+	//var geocoder = new google.maps.Geocoder();
+	/*document.addEventListener("deviceready", function () {
+		var networkState = navigator.network.connection.type;
+		//console.log(networkState);
+		if(networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
+			$("#GPS_Network").hide();
+			$("#moreSearchButton").hide();
+			$("#GPS").hide();
+			$("#Network").show();
+			$("#withoutGPSNetwork").hide();
+		} else {
+			$("#GPS_Network").hide();
+			$("#moreSearchButton").hide();		
+			$("#GPS").hide();
+			$("#Network").hide();
+			$("#withoutGPSNetwork").show();
+		}
+	}, false);*/	
+	//if (typeof google !== "undefined") {
 		$("#GPS_Network").hide();
 		$("#moreSearchButton").hide();									
 		$("#GPS").hide();
 		$("#Network").show();
 		$("#withoutGPSNetwork").hide();
-	} else {
+	/*} else {
 		$("#GPS_Network").hide();
 		$("#moreSearchButton").hide();									
 		$("#GPS").hide();
 		$("#Network").hide();
 		$("#withoutGPSNetwork").show();				
-	}
+	}*/
 };
 var searchRadius = 25;
 var setSearchRadius = function (dist) {
@@ -180,6 +255,7 @@ var latitude = -1;
 var longitude = -1;
 
 var currentTimeStamp = -1;		
+var maxLakesInSearchLakeName = 30;
 (function($) {
   var methods = {
       initInitPage : function(options) {
@@ -191,28 +267,7 @@ var currentTimeStamp = -1;
 		}
 		waterbodyIndex = -1;
 		speciesIndex = -1;
-		//currentTimeStamp = new Date().getTime();
-		//console.log(supportsGeo());
-		if (supportsGeo()) {
-			window.navigator.geolocation.getCurrentPosition(function (position) {
-				setupWithGPS(position);
-			}, function (error) {
-				switch (error.code) {
-					case error.PERMISSION_DENIED:
-						alert("Positioning failed. Please check that the location service is on and that you have accepted location for the application.");
-						break;
-					case error.TIMEOUT:					
-					case error.POSITION_UNAVAILABLE:
-						alert("Positioning failed. This often occurs when you are indoors.");
-						break;
-					default:
-						alert("Unexpected error occurred.");
-				}
-				setupWithoutGPS();
-			});	
-		} else {
-			setupWithoutGPS();
-		}		
+		 init();
       },
       /*initAdvancedSearchPage : function(options) {
 		var settings = {
@@ -603,17 +658,31 @@ var currentTimeStamp = -1;
 		$("#searchLakeNameLakesListPage").bind("pageshow", function(event, ui) {
 			advisoriesFilterWithDistance = advisories.filter(function(a) {
 				return a[3].toUpperCase().indexOf($("#lakeNameInput").val().toUpperCase()) !== -1;
+			}).sort(function(a, b){
+				if (a[3].toUpperCase() < b[3].toUpperCase())
+					return -1;
+				if (a[3].toUpperCase() > b[3].toUpperCase())
+					return 1;
+				return 0;
 			});
-			if (advisoriesFilterWithDistance.length > 0 ) {		
-				$("#searchLakeNameLakesListPageWithResults").show();
+			if (advisoriesFilterWithDistance.length > 0 ) {
 				$("#searchLakeNameLakesListPageNoResult").hide();
-				var html = Array.range(0, advisoriesFilterWithDistance.length - 1).map(function(i) {
+				$("#searchLakeNameLakesListPageWithResults").show();
+				var extractLength = advisoriesFilterWithDistance.length;
+				if (advisoriesFilterWithDistance.length <= maxLakesInSearchLakeName) {
+					$("#searchLakeNameLakesListPageManyResult").hide();
+				} else {
+					$("#searchLakeNameLakesListPageManyResult").show();
+					extractLength = maxLakesInSearchLakeName;
+				};
+				var html = Array.range(0, extractLength - 1).map(function(i) {
 					return "<li><a href=\"#searchLakeNameSpeciesListPage\" onclick=\"return setWaterbody(" + i + ")\">" + advisoriesFilterWithDistance[i][3] + "</a></li>\n";
 				}).join("");				
 				$("#searchLakeNameSoleLakesList").html(html);
 				$('#searchLakeNameSoleLakesList').listview('refresh');								
 			} else {
 				$("#searchLakeNameLakesListPageWithResults").hide();
+				$("#searchLakeNameLakesListPageManyResult").hide();
 				$("#searchLakeNameLakesListPageNoResult").show();			
 			}				
 		});		
@@ -690,6 +759,8 @@ var currentTimeStamp = -1;
 })(jQuery);
 
 $(document).ready(function() {
-	$().initApp();
+	//$(document).bind('deviceready', function(){
+		$().initApp();
+	//});
 })
 
