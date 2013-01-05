@@ -83,9 +83,6 @@ var filterAdvisoriesWithDistance = function (lat, lon) {
 		var d = R * c;
 		return d;
 	};
-	/*var calculateDist = function (lat1, lng1, lat2, lng2) {
-		return 1.60934*Math.sqrt( Math.pow(69 * (lat2 - lat1), 2) + Math.pow(53 * (lng2 - lng1), 2) );
-	};*/
 	return advisories.map(function(a) {
 			return [a[0], a[1], a[2], calculateDist(a[0], a[1], lat, lon), a[3]];
 		}).filter(function(a) {
@@ -99,21 +96,10 @@ var filterAdvisoriesWithDistance = function (lat, lon) {
 		});
 };
 
-
-/*
-var online = true;
-var onOnline = function (){online = true;alert("online");};
-var onOffline = function (){online = false;alert("offline");};
-document.addEventListener("online", onOnline, false);
-document.addEventListener("offline", onOffline, false);
-*/
-
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
     var networkState = navigator.network.connection.type;
-	//alert("Ready");
     if(networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
-		//alert("network not available.");
         window.navigator.geolocation.getCurrentPosition(function (position) {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
@@ -130,7 +116,6 @@ function onDeviceReady() {
 				$("#withoutGPSNetwork").show();
 			}, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
     } else {
-		//alert("network available.");
         window.navigator.geolocation.getCurrentPosition(function (position) {
 				latitude = position.coords.latitude;
 				longitude = position.coords.longitude;
@@ -149,54 +134,14 @@ function onDeviceReady() {
 	}
  }
 
-var init = function () {
-	if (navigator.geolocation) {
-		window.navigator.geolocation.getCurrentPosition(setupWithGPS, function (error) {
-			setupWithoutGPS();
-		}, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });	
-	} else {
-		setupWithoutGPS();
-	}
-};
- /*
-         document.addEventListener('deviceready', function() {
-            navigator.notification.alert('device ready'); 
-        });*/
 var setupWithGPS = function (position) {
-	//alert(online);
 	latitude = position.coords.latitude;
 	longitude = position.coords.longitude;
-	//var geocoder = new google.maps.Geocoder();
-	/*document.addEventListener("deviceready", function () {
-		var networkState = navigator.network.connection.type;
-		//console.log(networkState);
-		if(networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
-			$("#GPS_Network").hide();
-			$("#moreSearchButton").hide();
-			$("#GPS").show();
-			$("#Network").hide();
-			$("#withoutGPSNetwork").hide();	
-		} else {
-			$("#GPS_Network").show();
-			$("#moreSearchButton").show();
-			$("#GPS").hide();
-			$("#Network").hide();
-			$("#withoutGPSNetwork").hide();
-		}
-	}, false);*/
-	//if (typeof google !== "undefined"){
-		$("#GPS_Network").show();
-		$("#moreSearchButton").show();
-		$("#GPS").hide();
-		$("#Network").hide();
-		$("#withoutGPSNetwork").hide();
-	/*} else {
-		$("#GPS_Network").hide();
-		$("#moreSearchButton").hide();					
-		$("#GPS").show();
-		$("#Network").hide();
-		$("#withoutGPSNetwork").hide();				
-	}*/
+	$("#GPS_Network").show();
+	$("#moreSearchButton").show();
+	$("#GPS").hide();
+	$("#Network").hide();
+	$("#withoutGPSNetwork").hide();
 };
 var setupWithoutGPS = function () {
 	/*switch (error.code) {
@@ -210,38 +155,11 @@ var setupWithoutGPS = function () {
 		default:
 			alert("Unexpected error occurred.");
 	}*/
-	//alert(online);
-	//var geocoder = new google.maps.Geocoder();
-	/*document.addEventListener("deviceready", function () {
-		var networkState = navigator.network.connection.type;
-		//console.log(networkState);
-		if(networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
-			$("#GPS_Network").hide();
-			$("#moreSearchButton").hide();
-			$("#GPS").hide();
-			$("#Network").show();
-			$("#withoutGPSNetwork").hide();
-		} else {
-			$("#GPS_Network").hide();
-			$("#moreSearchButton").hide();		
-			$("#GPS").hide();
-			$("#Network").hide();
-			$("#withoutGPSNetwork").show();
-		}
-	}, false);*/	
-	//if (typeof google !== "undefined") {
-		$("#GPS_Network").hide();
-		$("#moreSearchButton").hide();									
-		$("#GPS").hide();
-		$("#Network").show();
-		$("#withoutGPSNetwork").hide();
-	/*} else {
-		$("#GPS_Network").hide();
-		$("#moreSearchButton").hide();									
-		$("#GPS").hide();
-		$("#Network").hide();
-		$("#withoutGPSNetwork").show();				
-	}*/
+	$("#GPS_Network").hide();
+	$("#moreSearchButton").hide();
+	$("#GPS").hide();
+	$("#Network").show();
+	$("#withoutGPSNetwork").hide();
 };
 var searchRadius = 25;
 var setSearchRadius = function (dist) {
@@ -267,7 +185,13 @@ var maxLakesInSearchLakeName = 30;
 		}
 		waterbodyIndex = -1;
 		speciesIndex = -1;
-		 init();
+		if (navigator.geolocation) {
+			window.navigator.geolocation.getCurrentPosition(setupWithGPS, function (error) {
+				setupWithoutGPS();
+			}, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });	
+		} else {
+			setupWithoutGPS();
+		}
       },
       /*initAdvancedSearchPage : function(options) {
 		var settings = {
